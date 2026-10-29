@@ -20,47 +20,47 @@
  void RS232Init(void)
  {
 	 // Set baud rate
-	 UBRR0L = (unsigned char)(MyUBRR & 0xff);
-	 UBRR0H = (unsigned char)(MyUBRR>>8);
+	 UBRR1L = (unsigned char)(MyUBRR & 0xff);
+	 UBRR1H = (unsigned char)(MyUBRR>>8);
 	 #ifdef UART_NORMAL_MODE
-	 UCSR0A = 0x00;
+	 UCSR1A = 0x00;
 	 #else
-	 UCSR0A = 1<<U2X; // Set *2 mode
+	 UCSR1A = 1<<U2X; // Set *2 mode
 	 #endif
-	 UCSR0B = (1<<RXEN0) | (1<<TXEN0);  //0x18 , enable receive and transmit
-	 UCSR0C =  (1<<UCSZ11) | (1<<UCSZ10); // 8 data bit 1 stop bit
+	 UCSR1B = (1<<RXEN1) | (1<<TXEN1);  //0x18 , enable receive and transmit
+	 UCSR1C =  (1<<UCSZ11) | (1<<UCSZ10); // 8 data bit 1 stop bit
 	 stdout = &uart_output;
 	 stdin = &uart_input;
  }
 
  void Enable_UART_Receive_Interrupt()
  {
-	 UCSR0B |= (1 << RXCIE0); // Enable the USART Recieve Complete interrupt (USART_RXC)
+	 UCSR1B |= (1 << RXCIE1); // Enable the USART Recieve Complete interrupt (USART_RXC)
  }
 
  void Disable_UART_Receive_Interupt()
  {
-	UCSR0B &= ~(1 << RXCIE0); // Disable the USART Recieve Complete interrupt (USART_RXC)
+	UCSR1B &= ~(1 << RXCIE1); // Disable the USART Recieve Complete interrupt (USART_RXC)
  }
 
  int uart_getch(FILE* stream)
  {
-	 while( !(UCSR0A & (1<<RXC0)))  ; // do nothing but wait
-	 return( UDR0);
+	 while( !(UCSR1A & (1<<RXC1)))  ; // do nothing but wait
+	 return( UDR1);
  }
 
  int uart_putch(char ch, FILE* stream)
  {
-	 while( !(UCSR0A & (1<<UDRE0))) ;
-	 UDR0 = ch;
+	 while( !(UCSR1A & (1<<UDRE1))) ;
+	 UDR1 = ch;
 	 return 0;
  }
 
- ISR(USART0_RX_vect)
+ ISR(USART1_RX_vect)
  {
 	 char ReceivedByte;
-	 ReceivedByte = UDR0;
+	 ReceivedByte = UDR1;
 	 //ConvertReceivedChar(&ReceivedByte);
 	 //ReceiveNewTimeoutValue(&ReceivedByte);
-	 UDR0 = ReceivedByte; // Echo back the received byte to the computer
+	 UDR1 = ReceivedByte; // Echo back the received byte to the computer
 }
