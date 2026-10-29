@@ -15,7 +15,19 @@
 
  static FILE uart_output = FDEV_SETUP_STREAM(uart_putch, NULL, _FDEV_SETUP_WRITE);
  static FILE uart_input = FDEV_SETUP_STREAM(NULL, uart_getch, _FDEV_SETUP_READ);
-
+ 
+void ConvertReceivedChar(char *ReceivedChar)
+{
+	// Den smarte måde at få konverteret små bogstaver om til store bogstaver og
+	// modsat er ved brug af Xor, som vi tidligere har set. Så kan vi klare det i
+	// én linje kode.
+	
+	if ( ((*ReceivedChar >= 0x41) && (*ReceivedChar <= 0x5D)) ||
+	     ((*ReceivedChar >= 0x61) && (*ReceivedChar <= 0x7D)))
+	{
+		*ReceivedChar = *ReceivedChar ^ Upper_Lower_Bit_Value;
+	}
+}
 
  void RS232Init(void)
  {
@@ -60,7 +72,6 @@
  {
 	 char ReceivedByte;
 	 ReceivedByte = UDR1;
-	 //ConvertReceivedChar(&ReceivedByte);
-	 //ReceiveNewTimeoutValue(&ReceivedByte);
+	 ConvertReceivedChar(&ReceivedByte);
 	 UDR1 = ReceivedByte; // Echo back the received byte to the computer
 }

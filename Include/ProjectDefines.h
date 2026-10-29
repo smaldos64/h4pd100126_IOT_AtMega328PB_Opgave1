@@ -28,4 +28,7 @@
 
 #define F_CPU 16000000UL
 
+#define Upper_Lower_Bit_Position 5
+#define Upper_Lower_Bit_Value (1 << Upper_Lower_Bit_Position)
+
 #endif /* PROJECTDEFINES_H_ */
