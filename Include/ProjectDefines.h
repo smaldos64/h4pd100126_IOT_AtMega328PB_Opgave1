@@ -20,6 +20,8 @@
 
 #endif
 
+typedef void (*Function_Pointer_With_One_CharPointer_Parameter)(char *);
+
 #if defined(_AVR_IOM2560_H_) || defined (_AVR_ATMEGA328PB_H_INCLUDED)
 #define GreenLedBit		1
 #define YellowLedBit	2

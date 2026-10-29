@@ -9,7 +9,8 @@
 #ifndef UART_H_
 #define UART_H_
 
-//#include "Arduino.h"
+#include "..\ProjectDefines.h"
+
 #include <stdio.h>
 #define BAUD 9600UL
 
@@ -25,5 +26,7 @@ extern int uart_getch(FILE* stream);
 extern int uart_putch(char ch, FILE* stream);
 extern void Enable_UART_Receive_Interrupt();
 extern void Disable_UART_Receive_Interupt();
+extern void SetupUARTFunctionCallbackPointer(Function_Pointer_With_One_CharPointer_Parameter 
+                                             Function_To_Callback);
 
 #endif /* UART_H_ */

@@ -14,6 +14,19 @@
 #include "include/Timer/Timer0.h"
 #include "include/UART/Uart.h"
 
+void ConvertReceivedCharMain(char *ReceivedChar)
+{
+	// Den smarte måde at få konverteret små bogstaver om til store bogstaver og
+	// modsat er ved brug af Xor, som vi tidligere har set. Så kan vi klare det i
+	// én linje kode.
+	
+	if ( ((*ReceivedChar >= 0x41) && (*ReceivedChar <= 0x5D)) ||
+	     ((*ReceivedChar >= 0x61) && (*ReceivedChar <= 0x7D)))
+	{
+		*ReceivedChar = *ReceivedChar ^ Upper_Lower_Bit_Value;
+	}
+}
+
 
 int main(void)
 {
@@ -24,6 +37,7 @@ int main(void)
 	Enable_Timer0_Overflow_Interrupt();
 
 	RS232Init();
+	SetupUARTFunctionCallbackPointer(ConvertReceivedCharMain);
 	Enable_UART_Receive_Interrupt();
 
 	sei();

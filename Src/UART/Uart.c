@@ -11,7 +11,6 @@
 #include <avr/interrupt.h>
 #include "../../Include/ProjectDefines.h"
 #include "../../Include/UART/Uart.h"
- //#include "../../Include/Main.h"
 
  static FILE uart_output = FDEV_SETUP_STREAM(uart_putch, NULL, _FDEV_SETUP_WRITE);
  static FILE uart_input = FDEV_SETUP_STREAM(NULL, uart_getch, _FDEV_SETUP_READ);
@@ -28,6 +27,15 @@ void ConvertReceivedChar(char *ReceivedChar)
 		*ReceivedChar = *ReceivedChar ^ Upper_Lower_Bit_Value;
 	}
 }
+
+static Function_Pointer_With_One_CharPointer_Parameter Callback_Function_Pointer = NULL;
+
+void SetupUARTFunctionCallbackPointer(Function_Pointer_With_One_CharPointer_Parameter 
+                                      Function_To_Callback)
+{
+	Callback_Function_Pointer = Function_To_Callback;
+}
+
 
  void RS232Init(void)
  {
