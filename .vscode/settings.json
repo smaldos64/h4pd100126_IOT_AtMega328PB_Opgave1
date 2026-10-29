@@ -1,0 +1,28 @@
+{
+    "mplab.clangd.compileCommandsDir": "${workspaceFolder}\\_build\\Opgave1\\default",
+    "mplab.clangd.arguments": [
+        "--header-insertion=never"
+    ],
+    "mplab.clangd.path": "c:\\Program Files\\Microchip\\xc8\\v4.00\\bin\\xc8-clangd.exe",
+    "cmake.sourceDirectory": "C:/Lars/h4pd100126/IOT/VsCode_MPLAB_AtMega328PB/Opgave1/cmake/Opgave1/default",
+    "memory-inspector.debugTypes": [
+        "arm-debugger",
+        "embedded-debug",
+        "gdb",
+        "gdbtarget",
+        "mplab-core-da"
+    ],
+    "mplab.ioview.columnWidths": {
+        "Opgave1-default": [
+            248,
+            100,
+            100,
+            100,
+            100,
+            100
+        ]
+    },
+    "mplab.ioview.taggedNodes": {
+        "Opgave1-default": []
+    }
+}
