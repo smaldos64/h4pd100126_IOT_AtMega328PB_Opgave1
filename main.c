@@ -12,6 +12,7 @@
 #include "include/ProjectDefines.h"
 #include "include/Timer/Timer.h"
 #include "include/Timer/Timer0.h"
+#include "include/UART/Uart.h"
 
 
 int main(void)
@@ -21,6 +22,10 @@ int main(void)
 		
 	Setup_Timer0_Overflow_Interrupt(VariableValue1SecValue8Bit);
 	Enable_Timer0_Overflow_Interrupt();
+
+	RS232Init();
+	Enable_UART_Receive_Interrupt();
+
 	sei();
 	
     /* Replace with your application code */
