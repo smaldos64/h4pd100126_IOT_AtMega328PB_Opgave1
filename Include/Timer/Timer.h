@@ -9,7 +9,7 @@
 #ifndef TIMER_H_
 #define TIMER_H_
 
-#include "ProjectDefines.h"
+#include "../ProjectDefines.h"
 #include <math.h>
 
 #ifndef F_CPU
@@ -38,8 +38,8 @@
 #define		VariableValue4SecValue8Bit				(uint16_t)(4 * VariableValue1SecValue8Bit)
 
 // Har man behov for ekstra lange Timeout Perioder, kan man lave alle "VariableValue" defines
-// herover om til 32 bit værdier (uint32_t). Dette kræver så, man laver alle variable til at tælle
-// Timer ticks op med om til 32 bit størelser også.
+// herover om til 32 bit vï¿½rdier (uint32_t). Dette krï¿½ver sï¿½, man laver alle variable til at tï¿½lle
+// Timer ticks op med om til 32 bit stï¿½relser ogsï¿½.
 
 extern  uint8_t GetBitValuesForClockSelect(uint_fast16_t ClockPrescalerValue);
 

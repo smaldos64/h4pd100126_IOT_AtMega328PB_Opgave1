@@ -7,9 +7,9 @@
 
 
  #include <avr/interrupt.h>
- #include "../Include/ProjectDefines.h"
- #include "../Include/Timer.h"
- #include "../Include/Timer0.h"
+ #include "../../Include/ProjectDefines.h"
+ #include "../../Include/Timer/Timer.h"
+ #include "../../Include/Timer/Timer0.h"
  
 
  static uint16_t Timer0OverflowValue;

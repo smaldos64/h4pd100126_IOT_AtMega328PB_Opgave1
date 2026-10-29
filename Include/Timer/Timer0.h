@@ -9,6 +9,8 @@
 #ifndef TIMER0_H_
 #define TIMER0_H_
 
+#include <stdint.h>
+
 extern void Setup_Timer0_Overflow_Interrupt(uint16_t ValueToVariable);
 extern void Enable_Timer0_Overflow_Interrupt();
 extern void Disable_Timer0_Overflow_Interrupt();
