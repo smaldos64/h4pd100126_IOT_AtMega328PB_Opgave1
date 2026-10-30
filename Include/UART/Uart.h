@@ -21,6 +21,8 @@
 #define MyUBRR (unsigned int)(F_CPU/(8*BAUD) -1)   // *2 mode
 #endif
 
+#define AVR8_UART_NUMBER       1
+
 extern void RS232Init( void);
 extern int uart_getch(FILE* stream);
 extern int uart_putch(char ch, FILE* stream);

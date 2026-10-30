@@ -14,6 +14,38 @@
 
  static FILE uart_output = FDEV_SETUP_STREAM(uart_putch, NULL, _FDEV_SETUP_WRITE);
  static FILE uart_input = FDEV_SETUP_STREAM(NULL, uart_getch, _FDEV_SETUP_READ);
+
+ /* En hjhælper makro er nødvendig for at ekspandere AVR8_UART_NUMBER macro til det aktuelle nummer,
+   hviket skyldes, at makro argumenter brugt med ## operatoren ikke er ekspanderet, så 
+   vi kan ikke overføre AVR8_UART_NUMBER direkte til denne makro. Vi må i stedet for bruge den næste 
+   makro - Denne makro ekspandere AVR8_UART_NUMBER til dens rette værdi. */
+#define 	MAKE_UART_NAME_(name1, number, name2) name1 ## number ## name2
+/* create name of the register or bit based on */
+#define		MAKE_UART_NAME(name1 , num, name2 ) MAKE_UART_NAME_(name1, num, name2 )
+
+/* Create the actual registry and bit names for UART */
+#define 	UCSRA	MAKE_UART_NAME(UCSR, AVR8_UART_NUMBER, A)
+#define 	UCSRB	MAKE_UART_NAME(UCSR, AVR8_UART_NUMBER, B)
+#define		UCSRC	MAKE_UART_NAME(UCSR, AVR8_UART_NUMBER, C)
+#define		UBRRH	MAKE_UART_NAME(UBRR, AVR8_UART_NUMBER, H)
+#define		UBRRL	MAKE_UART_NAME(UBRR, AVR8_UART_NUMBER, L)
+#define		RXEN	MAKE_UART_NAME(RXEN, AVR8_UART_NUMBER, )
+#define		TXEN	MAKE_UART_NAME(TXEN, AVR8_UART_NUMBER, )
+#define		UCSZ0	MAKE_UART_NAME(UCSZ, AVR8_UART_NUMBER, 0)
+#define		UCSZ1	MAKE_UART_NAME(UCSZ, AVR8_UART_NUMBER, 1)
+#define		RXCIE	MAKE_UART_NAME(RXCIE, AVR8_UART_NUMBER, )
+#define		UDRE	MAKE_UART_NAME(UDRE, AVR8_UART_NUMBER, )
+#define		UDR		MAKE_UART_NAME(UDR, AVR8_UART_NUMBER, )
+#define		RXC		MAKE_UART_NAME(RXC, AVR8_UART_NUMBER, )
+#define		U2X		MAKE_UART_NAME(U2X, AVR8_UART_NUMBER, )
+
+/* Define the USART vector name */
+/* the other MCUs have USART number in the ISR name */
+#define	MAKE_UART_VECT_(number)		USART ## number ## _RX_vect
+#define	MAKE_UART_VECT(num)			MAKE_UART_VECT_(num)
+#define	UART_ISR_VECTOR	MAKE_UART_VECT(AVR8_UART_NUMBER)	
+
+
  
 void ConvertReceivedChar(char *ReceivedChar)
 {
@@ -40,46 +72,49 @@ void SetupUARTFunctionCallbackPointer(Function_Pointer_With_One_CharPointer_Para
  void RS232Init(void)
  {
 	 // Set baud rate
-	 UBRR1L = (unsigned char)(MyUBRR & 0xff);
-	 UBRR1H = (unsigned char)(MyUBRR>>8);
-	 #ifdef UART_NORMAL_MODE
-	 UCSR1A = 0x00;
-	 #else
-	 UCSR1A = 1<<U2X; // Set *2 mode
-	 #endif
-	 UCSR1B = (1<<RXEN1) | (1<<TXEN1);  //0x18 , enable receive and transmit
-	 UCSR1C =  (1<<UCSZ11) | (1<<UCSZ10); // 8 data bit 1 stop bit
+	UBRRL = (unsigned char)(MyUBRR & 0xff);
+	UBRRH = (unsigned char)(MyUBRR>>8);
+	#ifdef UART_NORMAL_MODE
+	UCSRA = 0x00;
+	#else
+	UCSRA = 1<<U2X0; // Set *2 mode
+	#endif
+	UCSRB = (1<<RXEN) | (1<<TXEN);  //0x18 , enable receive and transmit
+	UCSRC =  (1<<UCSZ1) | (1<<UCSZ0); // 8 data bit 1 stop bit
+
 	 stdout = &uart_output;
 	 stdin = &uart_input;
  }
 
  void Enable_UART_Receive_Interrupt()
  {
-	 UCSR1B |= (1 << RXCIE1); // Enable the USART Recieve Complete interrupt (USART_RXC)
+	 UCSRB |= (1 << RXCIE); // Enable the USART Recieve Complete interrupt (USART_RXC)
  }
 
  void Disable_UART_Receive_Interupt()
  {
-	UCSR1B &= ~(1 << RXCIE1); // Disable the USART Recieve Complete interrupt (USART_RXC)
+	UCSRB &= ~(1 << RXCIE); // Disable the USART Recieve Complete interrupt (USART_RXC)
  }
 
  int uart_getch(FILE* stream)
  {
-	 while( !(UCSR1A & (1<<RXC1)))  ; // do nothing but wait
-	 return( UDR1);
+	 while( !(UCSRA & (1<<RXC)))  ; // do nothing but wait
+	 return( UDR);
  }
+
 
  int uart_putch(char ch, FILE* stream)
  {
-	 while( !(UCSR1A & (1<<UDRE1))) ;
-	 UDR1 = ch;
-	 return 0;
+	 while( !(UCSRA & (1<<UDRE)))  ; // do nothing but wait
+	 UDR = ch;
+	 return(ch);
  }
+ 
 
- ISR(USART1_RX_vect)
+ ISR(UART_ISR_VECTOR)
  {
 	 char ReceivedByte;
-	 ReceivedByte = UDR1;
+	 ReceivedByte = UDR;
 	 ConvertReceivedChar(&ReceivedByte);
-	 UDR1 = ReceivedByte; // Echo back the received byte to the computer
+	 UDR = ReceivedByte; // Echo back the received byte to the computer
 }
